@@ -1,0 +1,92 @@
+                            text: 'Internal Rate of Return (%)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Properties'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.raw + '%';
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Financial Incentives Chart
+        const incentivesCtx = document.getElementById('incentivesChart').getContext('2d');
+        const incentivesChart = new Chart(incentivesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Tax Credits', 'Rebates', 'Grants', 'Low-Interest Loans', 'Utility Incentives'],
+                datasets: [{
+                    data: [1.2, 0.5, 0.8, 0.4, 0.3],
+                    backgroundColor: [
+                        '#f0a786',
+                        '#aed1b8',
+                        '#dde568',
+                        '#f2f2f2',
+                        '#d99ac3'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `$${context.raw}M`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Add event listeners for chart tab switching
+        document.querySelectorAll('.chart-actions .chart-action').forEach(action => {
+            action.addEventListener('click', function() {
+                // Remove active class from all siblings
+                this.parentNode.querySelectorAll('.chart-action').forEach(sibling => {
+                    sibling.classList.remove('active');
+                });
+                
+                // Add active class to clicked element
+                this.classList.add('active');
+                
+                // Handle view changes for cash flow chart
+                if (this.textContent === 'Cumulative') {
+                    // Show cumulative line, hide net cash flow line
+                    cashFlowChart.data.datasets[2].hidden = true;
+                    cashFlowChart.data.datasets[3].hidden = false;
+                    cashFlowChart.update();
+                } else if (this.textContent === 'Net Cash Flow') {
+                    // Show net cash flow line, hide cumulative line
+                    cashFlowChart.data.datasets[2].hidden = false;
+                    cashFlowChart.data.datasets[3].hidden = true;
+                    cashFlowChart.update();
+                } else if (this.textContent === 'Pre/Post Retrofit') {
+                    // Toggle between pre and post retrofit datasets
+                    // This would need additional datasets and toggle logic
+                    alert('Pre/Post Retrofit view not implemented in this demo');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
